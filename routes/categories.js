@@ -1,21 +1,17 @@
 var express = require("express");
 var router = express.Router();
-let productModel = require("../schemas/products");
 let categoryModel = require("../schemas/category");
 let { CreateSuccessRes } = require("../utils/responseHandler");
 
 router.get("/", async function (req, res, next) {
-  let products = await productModel
-    .find({
-      isDeleted: false,
-    })
-    .populate("category");
-
+  let products = await categoryModel.find({
+    isDeleted: false,
+  });
   CreateSuccessRes(res, products, 200);
 });
 router.get("/:id", async function (req, res, next) {
   try {
-    let product = await productModel.findOne({
+    let product = await categoryModel.findOne({
       _id: req.params.id,
       isDeleted: false,
     });
@@ -27,21 +23,11 @@ router.get("/:id", async function (req, res, next) {
 router.post("/", async function (req, res, next) {
   try {
     let body = req.body;
-    let category = await categoryModel.findOne({
-      name: body.category,
+    let newProduct = new categoryModel({
+      name: body.name,
     });
-    if (category) {
-      let newProduct = new productModel({
-        name: body.name,
-        price: body.price,
-        quantity: body.quantity,
-        category: category._id,
-      });
-      await newProduct.save();
-      CreateSuccessRes(res, newProduct, 200);
-    } else {
-      throw new Error("cate khong ton tai");
-    }
+    await newProduct.save();
+    CreateSuccessRes(res, newProduct, 200);
   } catch (error) {
     next(error);
   }
@@ -54,16 +40,7 @@ router.put("/:id", async function (req, res, next) {
     if (body.name) {
       updatedInfo.name = body.name;
     }
-    if (body.price) {
-      updatedInfo.price = body.price;
-    }
-    if (body.quantity) {
-      updatedInfo.quantity = body.quantity;
-    }
-    if (body.category) {
-      updatedInfo.category = body.category;
-    }
-    let updateProduct = await productModel.findByIdAndUpdate(id, updatedInfo, {
+    let updateProduct = await categoryModel.findByIdAndUpdate(id, updatedInfo, {
       new: true,
     });
     CreateSuccessRes(res, updateProduct, 200);
@@ -74,8 +51,7 @@ router.put("/:id", async function (req, res, next) {
 router.delete("/:id", async function (req, res, next) {
   let id = req.params.id;
   try {
-    let body = req.body;
-    let updateProduct = await productModel.findByIdAndUpdate(
+    let updateProduct = await categoryModel.findByIdAndUpdate(
       id,
       {
         isDeleted: true,
