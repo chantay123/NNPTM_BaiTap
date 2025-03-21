@@ -1,6 +1,5 @@
-const mongoose = require("mongoose");
-
-const categorySchema = new mongoose.Schema(
+let mongoose = require("mongoose");
+let RoleSchema = mongoose.Schema(
   {
     name: {
       type: String,
@@ -11,14 +10,13 @@ const categorySchema = new mongoose.Schema(
       type: String,
       default: "",
     },
-    isDelete: {
+    isDeleted: {
       type: Boolean,
       default: false,
     },
   },
   {
-    Timestamps: true,
+    timestamps: true,
   }
 );
-
-module.exports = mongoose.model("category", categorySchema);
+module.exports = mongoose.model("Role", RoleSchema);

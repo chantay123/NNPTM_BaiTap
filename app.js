@@ -26,9 +26,10 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/", indexRouter);
-app.use("/users", usersRouter);
-app.use("/products", require("./routes/products"));
-app.use("/category", require("./routes/categories"));
+
+// app.use("/user", usersRouter);
+app.use("/users", require("./routes/users"));
+app.use("/role", require("./routes/role"));
 
 app.use(function (req, res, next) {
   next(createError(404));
@@ -39,9 +40,6 @@ app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get("env") === "development" ? err : {};
-
-  // render the error page
-  //res.status(err.status || 500);
   CreateErrorRes(res, err.message, err.status || 500);
 });
 

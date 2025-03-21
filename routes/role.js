@@ -1,21 +1,21 @@
 var express = require("express");
 var router = express.Router();
-let categoryModel = require("../schemas/category");
-let { CreateSuccessRes } = require("../utils/responseHandler");
+let roleModel = require("../schemas/Role");
+let { CreateErrorRes, CreateSuccessRes } = require("../utils/responseHandler");
 
 router.get("/", async function (req, res, next) {
-  let products = await categoryModel.find({
+  let role = await roleModel.find({
     isDeleted: false,
   });
-  CreateSuccessRes(res, products, 200);
+  CreateSuccessRes(res, role, 200);
 });
 router.get("/:id", async function (req, res, next) {
   try {
-    let product = await categoryModel.findOne({
+    let role = await roleModel.findOne({
       _id: req.params.id,
       isDeleted: false,
     });
-    CreateSuccessRes(res, product, 200);
+    CreateSuccessRes(res, role, 200);
   } catch (error) {
     next(error);
   }
@@ -23,11 +23,12 @@ router.get("/:id", async function (req, res, next) {
 router.post("/", async function (req, res, next) {
   try {
     let body = req.body;
-    let newProduct = new categoryModel({
+    let newrole = new roleModel({
       name: body.name,
+      description: body.description,
     });
-    await newProduct.save();
-    CreateSuccessRes(res, newProduct, 200);
+    await newrole.save();
+    CreateSuccessRes(res, newrole, 200);
   } catch (error) {
     next(error);
   }
@@ -40,10 +41,13 @@ router.put("/:id", async function (req, res, next) {
     if (body.name) {
       updatedInfo.name = body.name;
     }
-    let updateProduct = await categoryModel.findByIdAndUpdate(id, updatedInfo, {
+    if (body.description) {
+      updatedInfo.description = body.description;
+    }
+    let updaterole = await roleModel.findByIdAndUpdate(id, updatedInfo, {
       new: true,
     });
-    CreateSuccessRes(res, updateProduct, 200);
+    CreateSuccessRes(res, updaterole, 200);
   } catch (error) {
     next(error);
   }
@@ -51,14 +55,14 @@ router.put("/:id", async function (req, res, next) {
 router.delete("/:id", async function (req, res, next) {
   let id = req.params.id;
   try {
-    let updateProduct = await categoryModel.findByIdAndUpdate(
+    let updaterole = await roleModel.findByIdAndUpdate(
       id,
       {
         isDeleted: true,
       },
       { new: true }
     );
-    CreateSuccessRes(res, updateProduct, 200);
+    CreateSuccessRes(res, updaterole, 200);
   } catch (error) {
     next(error);
   }

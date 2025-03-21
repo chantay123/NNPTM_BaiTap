@@ -1,34 +1,39 @@
 let mongoose = require("mongoose");
-let productSchema = mongoose.Schema(
+let UserSchema = mongoose.Schema(
   {
-    name: {
+    username: {
       type: String,
       required: true,
       unique: true,
     },
-    price: {
-      type: Number,
+    password: {
+      type: "String",
       required: true,
-      min: 0,
     },
-    quantity: {
-      type: Number,
-      default: 0,
+    email: {
+      type: String,
       required: true,
-      min: 0,
+      unique: true,
     },
-    description: {
+    fullName: {
       type: String,
       default: "",
     },
-    urlImg: {
+    avatarUrl: {
       type: String,
       default: "",
     },
-    category: {
+    status: {
+      type: Boolean,
+      default: "false",
+    },
+    role: {
       type: mongoose.Types.ObjectId,
-      ref: "category",
+      ref: "Role",
       required: true,
+    },
+    loginCount: {
+      type: "Number",
     },
     isDeleted: {
       type: Boolean,
@@ -39,4 +44,4 @@ let productSchema = mongoose.Schema(
     timestamps: true,
   }
 );
-module.exports = mongoose.model("product", productSchema);
+module.exports = mongoose.model("User", UserSchema);
